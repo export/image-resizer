@@ -70,7 +70,8 @@ function Image(request, response){
         });
       }
 
-      return response.status(200).send(read);
+      response.status(200).send(read);
+      read = null;
     }
   }
   catch(e) {}
