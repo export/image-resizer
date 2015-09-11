@@ -1,6 +1,6 @@
 'use strict';
 
-var _, Logger, env, modifiers, stream, util, imgType;
+var _, Logger, env, modifiers, stream, util, imgType, fs;
 
 _         = require('lodash');
 Logger    = require('./utils/logger');
@@ -9,7 +9,7 @@ modifiers = require('./lib/modifiers');
 stream    = require('stream');
 util      = require('util');
 imgType   = require('image-type');
-
+fs        = require('fs');
 
 // Simple stream to represent an error at an early stage, for instance a
 // request to an excluded source.
@@ -25,7 +25,7 @@ ErrorStream.prototype._read = function(){
 };
 
 
-function Image(request){
+function Image(request, response){
   // placeholder for any error objects
   this.error = null;
 
@@ -40,6 +40,18 @@ function Image(request){
 
   // pull the various parts needed from the request params
   this.parseUrl(request);
+
+  try {
+    request.tmpcache = false;
+
+    var read = fs.readFileSync('/tmp'+request.path);
+
+    if(read) {
+      request.tmpcache = true;
+      return response.status(200).send(read);
+    }
+  }
+  catch(e) {}
 
   // placeholder for the buffer/stream coming from s3, will hold the image
   this.contents = null;

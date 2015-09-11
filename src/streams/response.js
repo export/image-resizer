@@ -4,7 +4,8 @@ var fs     = require('fs');
 var stream = require('stream');
 var env    = require('../config/environment_vars');
 var util   = require('util');
-
+var path   = require('path');
+var mkdirp = require('mkdirp');
 
 function ResponseWriter(request, response){
   if (!(this instanceof ResponseWriter)){
@@ -42,6 +43,19 @@ ResponseWriter.prototype.shouldCacheResponse = function(){
 
 
 ResponseWriter.prototype._write = function(image){
+  var imgpath = '/tmp'+this.request.path;
+  var imgdir  = path.dirname(imgpath);
+
+  mkdirp(imgdir, function (err) {
+    if(err)
+      return console.error(err);
+
+    fs.writeFile(imgpath, new Buffer(image.contents), function(err) {
+      if(err)
+        console.error(err);
+    });
+  });
+
   if (image.isError()){
     image.log.error(image.error.message);
     image.log.flush();
