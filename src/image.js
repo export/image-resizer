@@ -79,6 +79,13 @@ function Image(request, response){
 Image.validInputFormats  = ['jpeg', 'jpg', 'gif', 'png', 'webp'];
 Image.validOutputFormats = ['jpeg', 'png', 'webp'];
 
+Image.prototype.expiresIn = function(maxAge){
+  var dt = Date.now();
+  dt += maxAge * 1000;
+
+  return (new Date(dt)).toGMTString();
+};
+
 Image.prototype.shouldCacheResponse = function(){
   if (env.development){
     if (env.CACHE_DEV_REQUESTS){
