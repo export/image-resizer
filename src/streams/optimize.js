@@ -4,6 +4,7 @@ var sharp  = require('sharp');
 var env    = require('../config/environment_vars');
 var map    = require('map-stream');
 
+sharp.cache(50, 50);
 
 module.exports = function () {
 

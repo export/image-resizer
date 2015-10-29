@@ -5,6 +5,7 @@ var map   = require('map-stream');
 var env   = require('../config/environment_vars');
 var dims  = require('../lib/dimensions');
 
+sharp.cache(50, 50);
 
 module.exports = function () {
 

@@ -3,6 +3,7 @@
 var sharp = require('sharp');
 var map   = require('map-stream');
 
+sharp.cache(50, 50);
 
 module.exports = function(){
 

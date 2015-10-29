@@ -2,6 +2,7 @@
 
 var sharp = require('sharp');
 
+sharp.cache(50, 50);
 
 module.exports = function(image, callback){
 
