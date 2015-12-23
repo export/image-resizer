@@ -52,52 +52,11 @@ function Image(request, response){
 
   // all logging strings will be queued here to be written on response
   this.log = new Logger();
-
-  try {
-    request.tmpcache = false;
-
-    var read = fs.readFileSync('/tmp'+request.path);
-
-    if(read) {
-      request.tmpcache = true;
-
-      if (this.shouldCacheResponse()) {
-        response.set({
-          'Cache-Control':  'public',
-          'Expires':        this.expiresIn(this.expiry),
-          'Last-Modified':  (new Date(0)).toGMTString(),
-          'Vary':           'Accept-Encoding'
-        });
-      }
-
-      response.status(200).send(read);
-      read = null;
-    }
-  }
-  catch(e) {}
 }
 
 Image.validInputFormats  = ['jpeg', 'jpg', 'gif', 'png', 'webp'];
 Image.validOutputFormats = ['jpeg', 'png', 'webp'];
 
-Image.prototype.expiresIn = function(maxAge){
-  var dt = Date.now();
-  dt += maxAge * 1000;
-
-  return (new Date(dt)).toGMTString();
-};
-
-Image.prototype.shouldCacheResponse = function(){
-  if (env.development){
-    if (env.CACHE_DEV_REQUESTS){
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  return true;
-};
 
 // Determine the name and format of the requested image
 Image.prototype.parseImage = function(request){
