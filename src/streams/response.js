@@ -43,19 +43,6 @@ ResponseWriter.prototype.shouldCacheResponse = function(){
 
 
 ResponseWriter.prototype._write = function(image){
-  var imgpath = '/tmp'+this.request.path;
-  var imgdir  = path.dirname(imgpath);
-
-  mkdirp(imgdir, function (err) {
-    if(err)
-      return console.error(err);
-
-    fs.writeFile(imgpath, new Buffer(image.contents), function(err) {
-      if(err)
-        console.error(err);
-    });
-  });
-
   if (image.isError()){
     image.log.error(image.error.message);
     image.log.flush();
@@ -71,6 +58,19 @@ ResponseWriter.prototype._write = function(image){
 
     return;
   }
+
+  var imgpath = '/tmp'+this.request.path;
+  var imgdir  = path.dirname(imgpath);
+
+  mkdirp(imgdir, function (err) {
+    if(err)
+      return console.error(err);
+
+    fs.writeFile(imgpath, new Buffer(image.contents), function(err) {
+      if(err)
+        console.error(err);
+    });
+  });
 
   if (image.modifiers.action === 'json'){
     if (this.shouldCacheResponse()){
